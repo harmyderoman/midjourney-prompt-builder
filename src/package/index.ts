@@ -15,12 +15,10 @@ export class MJPromptBuilder {
       this.flagMap[config[key].short] = key;
       this.flagMap[`--${key}`] = key;
     }
-    console.log('flag map', this.flagMap, this.options)
   }
 
   fromString(prompt: string): MJPromptBuilder {
-    const paramRegex = /(--[a-zA-Z]+)(?:\s+(?!-{2})([^\s]+))?/g;
-
+    const paramRegex = /(--[a-zA-Z]+)(?:\s+(?!-{2})([^\s][^--]*))?/g;
     const body = prompt.split(' --')[0].trim();
     this.options.body = body;
 
@@ -38,7 +36,7 @@ export class MJPromptBuilder {
         } else if (param.type === Number) {
           this.options[key] = Number(value);
         } else if (param.type === String) {
-          this.options[key] = value;
+          this.options[key] = value.trim();
         }
       }
     }
