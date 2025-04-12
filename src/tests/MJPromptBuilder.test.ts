@@ -4,7 +4,7 @@ import { MJPromptBuilder } from '../package'
 const mjParams = {
   raw: { type: Boolean, default: false, short: '--raw' },
   profile: { type: String, default: '', short: '--p' },
-  aspectRatio: { type: String, default: '1:1', short: '--ar' },
+  ar: { type: String, default: '1:1', short: '--ar' },
   stylize: { type: Number, default: 100, short: '--s' },
   version: { type: String, default: '7', short: '--v' },
   chaos: { type: Number, default: 0, short: '--c' },
@@ -23,7 +23,7 @@ describe('MJPromptBuilder', () => {
 
     expect(builder.toJSON()).toEqual({
       body: 'Airship battle',
-      aspectRatio: '9:16',
+      ar: '9:16',
       raw: true,
       profile: 'rtbkpdz',
       stylize: 1000,
@@ -35,7 +35,7 @@ describe('MJPromptBuilder', () => {
   test('creates string from JSON object', () => {
     const promptObject = {
       body: 'Airship battle',
-      aspectRatio: '9:16',
+      ar: '9:16',
       raw: true,
       profile: 'rtbkpdz',
       stylize: 1000,
@@ -59,7 +59,7 @@ describe('MJPromptBuilder', () => {
   test('ensures fromJSON and toJSON are reversible', () => {
     const original = {
       body: 'Epic landscape',
-      aspectRatio: '16:9',
+      ar: '16:9',
       raw: false,
       profile: '',
       stylize: 500,
@@ -79,7 +79,7 @@ describe('MJPromptBuilder', () => {
 
     expect(builder.toJSON()).toEqual({
       body: 'Minimal prompt',
-      aspectRatio: '1:1',
+      ar: '1:1',
       raw: false,
       profile: '',
       stylize: 100,
@@ -96,7 +96,7 @@ describe('MJPromptBuilder', () => {
 
     expect(builder.toJSON()).toEqual({
       body: 'Test',
-      aspectRatio: '4:3',
+      ar: '4:3',
       raw: false,
       profile: '',
       stylize: 100,
