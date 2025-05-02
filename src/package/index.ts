@@ -4,21 +4,32 @@ import mjParams from './parameters'
 
 export class MJPromptBuilder {
   private options: PromptOptions = { body: '' };
-
   private flagMap: Record<string, string> = {};
+  private config: MJParamConfig;
+  private currentVersion = '7';
 
-  constructor(private config: MJParamConfig = mjParams) {
-    for (const key in config) {
-      this.options[key] = config[key].default;
+  constructor() {
+    this.config = mjParams[this.currentVersion];
+    this.initOptionsAndFlags();
+  }
 
-      // For quick lookup by short and long names
-      this.flagMap[config[key].short] = key;
+  private initOptionsAndFlags() {
+    this.flagMap = {};
+    for (const key in this.config) {
+      this.options[key] = this.config[key].default;
+      this.flagMap[this.config[key].short] = key;
       this.flagMap[`--${key}`] = key;
     }
   }
 
   fromString(prompt: string): MJPromptBuilder {
+    const versionMatch = prompt.match(/--v\s?(\S+)/);
+    this.currentVersion = versionMatch ? versionMatch[1] : '7';
+    this.config = mjParams[this.currentVersion] || mjParams['7'];
+    this.initOptionsAndFlags();
+
     const paramRegex = /(--[a-zA-Z]+)(?:\s+(?!-{2})([^\s][^--]*))?/g;
+
     const body = prompt.split(' --')[0].trim();
     this.options.body = body;
 
@@ -30,7 +41,6 @@ export class MJPromptBuilder {
   
       if (key) {
         const param = this.config[key];
-
         if (param.type === Boolean) {
           this.options[key] = true;
         } else if (param.type === Number) {
@@ -50,7 +60,6 @@ export class MJPromptBuilder {
     for (const key in this.config) {
       const param = this.config[key];
       const value = this.options[key];
-
       const flag = useShort ? param.short : `--${key}`;
 
       if (param.type === Boolean && value === true) {
@@ -72,12 +81,16 @@ export class MJPromptBuilder {
     this.options = { ...obj };
     return this;
   }
-
-  toJSON(): PromptOptions {
+  toJSON(onlyNotDefault = false): PromptOptions {
     const obj: PromptOptions = { body: this.options.body };
 
     for (const key in this.config) {
-      obj[key] = this.options[key];
+      if (
+        !onlyNotDefault || 
+        this.options[key] !== this.config[key].default
+      ) {
+        obj[key] = this.options[key];
+      }
     }
 
     return obj;

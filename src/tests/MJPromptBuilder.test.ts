@@ -2,50 +2,51 @@ import { describe, expect, test, beforeEach } from 'vitest'
 import { MJPromptBuilder } from '../package'
 
 const mjParams = {
+  no: { type: String, default: '', short: '--no' },
+  chaos: { type: Number, default: 0, short: '--c' },
+  ar: { type: String, default: '1:1', short: '--ar' },
   raw: { type: Boolean, default: false, short: '--raw' },
   profile: { type: String, default: '', short: '--p' },
-  ar: { type: String, default: '1:1', short: '--ar' },
   stylize: { type: Number, default: 100, short: '--s' },
   version: { type: String, default: '7', short: '--v' },
-  chaos: { type: Number, default: 0, short: '--c' },
 }
 
 describe('MJPromptBuilder', () => {
   let builder: MJPromptBuilder
 
   beforeEach(() => {
-    builder = new MJPromptBuilder(mjParams)
+    builder = new MJPromptBuilder()
   })
 
   test('creates prompt from string', () => {
     const promptStr = 'Airship battle --ar 9:16 --raw --p rtbkpdz --s 1000 --v 6.1 --c 50'
     builder.fromString(promptStr)
 
-    expect(builder.toJSON()).toEqual({
+    expect(builder.toJSON(true)).toEqual({
       body: 'Airship battle',
+      chaos: 50,
       ar: '9:16',
       raw: true,
       profile: 'rtbkpdz',
       stylize: 1000,
       version: '6.1',
-      chaos: 50,
     })
   })
 
   test('creates string from JSON object', () => {
     const promptObject = {
       body: 'Airship battle',
+      chaos: 50,
       ar: '9:16',
       raw: true,
       profile: 'rtbkpdz',
       stylize: 1000,
       version: '6.1',
-      chaos: 50,
     }
 
     builder.fromJSON(promptObject)
 
-    expect(builder.toString()).toBe('Airship battle --raw --p rtbkpdz --ar 9:16 --s 1000 --v 6.1 --c 50')
+    expect(builder.toString()).toBe('Airship battle --c 50 --ar 9:16 --raw --p rtbkpdz --s 1000')
   })
 
   test('ensures fromString and toString are reversible', () => {
