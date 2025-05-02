@@ -1,4 +1,4 @@
-
+// for tests
 export class MJPromptBuilder {
   [x: string]: any
 
