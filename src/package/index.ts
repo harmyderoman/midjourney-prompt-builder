@@ -79,6 +79,9 @@ export class MJPromptBuilder {
 
   fromJSON(obj: PromptOptions): MJPromptBuilder {
     this.options = { ...obj };
+    const { version } = obj
+    if(version) this.currentVersion = version
+    this.config = mjParams[this.currentVersion]
     return this;
   }
   toJSON(onlyNotDefault = false): PromptOptions {
