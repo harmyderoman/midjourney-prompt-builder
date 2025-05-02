@@ -1,15 +1,19 @@
-import { describe, expect, test, beforeEach } from 'vitest'
+import { describe, expect, test, beforeEach, vi } from 'vitest'
 import { MJPromptBuilder } from '../package'
 
-const mjParams = {
-  no: { type: String, default: '', short: '--no' },
-  chaos: { type: Number, default: 0, short: '--c' },
-  ar: { type: String, default: '1:1', short: '--ar' },
-  raw: { type: Boolean, default: false, short: '--raw' },
-  profile: { type: String, default: '', short: '--p' },
-  stylize: { type: Number, default: 100, short: '--s' },
-  version: { type: String, default: '7', short: '--v' },
-}
+vi.mock('./../package/parameters.js', () => {
+  return {
+    default: { '6.1' :{
+      no: { type: String, default: '', short: '--no' },
+      chaos: { type: Number, default: 0, short: '--c' },
+      ar: { type: String, default: '1:1', short: '--ar' },
+      raw: { type: Boolean, default: false, short: '--raw' },
+      profile: { type: String, default: '', short: '--p' },
+      stylize: { type: Number, default: 100, short: '--s' },
+      version: { type: String, default: '', short: '--v' },
+    }},
+  }
+})
 
 describe('MJPromptBuilder', () => {
   let builder: MJPromptBuilder
@@ -46,11 +50,11 @@ describe('MJPromptBuilder', () => {
 
     builder.fromJSON(promptObject)
 
-    expect(builder.toString()).toBe('Airship battle --c 50 --ar 9:16 --raw --p rtbkpdz --s 1000')
+    expect(builder.toString(true)).toBe('Airship battle --c 50 --ar 9:16 --raw --p rtbkpdz --s 1000 --v 6.1')
   })
 
   test('ensures fromString and toString are reversible', () => {
-    const original = 'Epic landscape --ar 16:9 --s 500 --v 5.2'
+    const original = 'Epic landscape --ar 16:9 --s 500 --v 6.1'
     builder.fromString(original)
     const serialized = builder.toString()
 
@@ -64,7 +68,7 @@ describe('MJPromptBuilder', () => {
       raw: false,
       profile: '',
       stylize: 500,
-      version: '5.2',
+      version: '6.1',
       chaos: 0,
     }
 
@@ -78,21 +82,15 @@ describe('MJPromptBuilder', () => {
     const minimalPrompt = 'Minimal prompt'
     builder.fromString(minimalPrompt)
 
-    expect(builder.toJSON()).toEqual({
+    expect(builder.toJSON(true)).toEqual({
       body: 'Minimal prompt',
-      ar: '1:1',
-      raw: false,
-      profile: '',
-      stylize: 100,
-      version: '7',
-      chaos: 0,
     })
 
     expect(builder.toString()).toBe('Minimal prompt')
   })
 
   test('ignores unknown parameters gracefully', () => {
-    const promptStr = 'Test --unknown param --ar 4:3'
+    const promptStr = 'Test --unknown param --ar 4:3 --v 6.1'
     builder.fromString(promptStr)
 
     expect(builder.toJSON()).toEqual({
@@ -101,8 +99,9 @@ describe('MJPromptBuilder', () => {
       raw: false,
       profile: '',
       stylize: 100,
-      version: '7',
+      version: '6.1',
       chaos: 0,
+      no: ''
     })
   })
 })
