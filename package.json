@@ -1,8 +1,15 @@
 {
-  "name": "midjourney-prompt-builder",
-  "private": true,
+  "name": "johnny",
+  "private": false,
   "version": "0.1.0",
   "type": "module",
+  "main": "dist/johnny.cjs.js",
+  "module": "dist/johnny.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -13,5 +20,8 @@
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
     "vitest": "^3.1.1"
+  },
+  "dependencies": {
+    "vite-plugin-dts": "^4.5.4"
   }
 }
