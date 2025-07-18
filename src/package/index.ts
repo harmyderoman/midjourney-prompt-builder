@@ -98,4 +98,16 @@ export class MJPromptBuilder {
 
     return obj;
   }
+
+  validateOption(key: string, value: any): boolean {
+    const param = this.config[key];
+    if (!param) return false; // no key
+
+    if (param.validate) {
+      return param.validate(value);
+    }
+
+    // If nop validate, return true (no validation conditions)
+    return true;
+  }
 }

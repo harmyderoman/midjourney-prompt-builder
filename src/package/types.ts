@@ -5,6 +5,7 @@ export type MJParamConfig = {
     type: ParamType;
     default: any;
     short: string;
+    validate?: (val: any) => boolean;
   };
 };
 
