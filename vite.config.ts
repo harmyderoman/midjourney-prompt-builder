@@ -5,12 +5,12 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/package/index.ts',
-      name: 'johnny', 
-      fileName: (format) => `johnny.${format}.js`,
+      name: 'mjpb', 
+      fileName: (format) => `mjpb.${format}.js`,
       formats: ['es', 'cjs'], // ESM и CommonJS
     },
     rollupOptions: {
-      external: [], //
+      external: [],
     },
   },
   plugins: [dts()],
