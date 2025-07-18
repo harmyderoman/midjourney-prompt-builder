@@ -1,5 +1,7 @@
 import './style.css';
+// @ts-ignore
 import typescriptLogo from './typescript.svg';
+// @ts-ignore
 import viteLogo from '/vite.svg';
 import { MJPromptBuilder } from './package';
 
